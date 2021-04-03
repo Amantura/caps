@@ -1,4 +1,4 @@
-# ooba-blog
+# caps
 
 ## Build Setup
 
