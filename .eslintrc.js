@@ -29,6 +29,7 @@ module.exports = {
     'prefer-const': ['warn'],
     'require-await': ['warn'],
     'no-unreachable': ['warn'],
+    "no-trailing-spaces": [2, { "skipBlankLines": true }],
 
     // vue specific rules
     'vue/script-indent': ['warn', 2, {
