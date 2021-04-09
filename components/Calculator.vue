@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="calculate" class="overflow-hidden border-2 border-gray-700 xl:w-9/12 rounded-3xl">
+  <form class="overflow-hidden border-2 border-gray-700 xl:w-9/12 rounded-3xl" @submit.prevent="calculate">
     <div class="w-full py-3 text-center text-white shadow-sm bg-top-50">
       <h2>
         Калькулятор
@@ -20,7 +20,7 @@
             v-for="(item, fromId) in fromCities"
             :key="fromId"
             :value="item.id"
-            >{{ item.title }}</option>
+          >{{ item.title }}</option>
         </select>
         <i class="absolute text-xl text-gray-700 top-5 fas fa-caret-down right-5"></i>
       </label>
@@ -35,7 +35,7 @@
             v-for="(item, toId) in toCities"
             :key="toId"
             :value="item.id"
-            >{{ item.title }}</option>
+          >{{ item.title }}</option>
         </select>
         <i class="absolute text-xl text-gray-700 top-5 fas fa-caret-down right-5"></i>
       </label>
@@ -47,10 +47,25 @@
           type="button"
           :class="{'text-blue-500 bg-white shadow-md': model.clearance === item.id}"
           class="w-1/2 py-5 rounded-2xl "
-          @click="model.clearance = item.id">
+          @click="selectClearance(item.id)">
           {{ item.title }}
         </button>
       </div>
+
+      <label v-if="categories.length > 0" class="relative">
+        <select
+          id="to"
+          v-model="model.category"
+          class="w-full px-5 py-5 bg-gray-200 outline-none appearance-none rounded-2xl focus:outline-none"
+          name="to">
+          <option
+            v-for="(item, categoryId) in categories"
+            :key="categoryId"
+            :value="item.id"
+          >{{ item.title }}</option>
+        </select>
+        <i class="absolute text-xl text-gray-700 top-5 fas fa-caret-down right-5"></i>
+      </label>
 
       <div class="flex space-x-4">
         <label class="w-1/2">
@@ -72,7 +87,7 @@
       </div>
 
       <div class="pb-5">
-        <button @click="calculate" class="w-full px-5 py-4 text-white border-2 border-blue-500 bg-gradient-to-r from-blue-500 to-blue-700 rounded-3xl">
+        <button class="w-full px-5 py-4 text-white border-2 border-blue-500 bg-gradient-to-r from-blue-500 to-blue-700 rounded-3xl" @click="calculate">
           Рассчитать
         </button>
       </div>
@@ -90,15 +105,15 @@
           <span class="text-xl font-semibold text-white ">{{ model.total }}</span>
         </div>
 
-<!--        <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">-->
-<!--          <span class="text-gray-500">Продажникам</span>-->
-<!--          <span class="text-xl font-semibold text-white ">{{ model.sellersAmount }}</span>-->
-<!--        </div>-->
+        <!--        <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">-->
+        <!--          <span class="text-gray-500">Продажникам</span>-->
+        <!--          <span class="text-xl font-semibold text-white ">{{ model.sellersAmount }}</span>-->
+        <!--        </div>-->
 
-<!--        <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">-->
-<!--          <span class="text-gray-500">Агентам</span>-->
-<!--          <span class="text-xl font-semibold text-white ">{{ model.agentsPrice }} $</span>-->
-<!--        </div>-->
+        <!--        <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">-->
+        <!--          <span class="text-gray-500">Агентам</span>-->
+        <!--          <span class="text-xl font-semibold text-white ">{{ model.agentsPrice }} $</span>-->
+        <!--        </div>-->
       </div>
     </div>
   </form>
@@ -117,27 +132,13 @@ export default {
       sellersAmount: 0,
       price: 0,
       total: 0,
+      category: null,
     },
     toCities: [],
     fromCities: [],
     clearances: [],
+    categories: [],
   }),
-  methods: {
-    async calculate() {
-      await this.$axios.$post('/api/calculate', {
-        city_from: this.model.cityFromId,
-        city_to: this.model.cityToId,
-        clearance: this.model.clearance,
-        weight: this.model.weight,
-        volume: this.model.volume
-      }).then((data) => {
-        this.model.agentsAmount = data.agentsAmount
-        this.model.sellersAmount = data.sellersAmount
-        this.model.price = data.price
-        this.model.total = data.total
-      })
-    }
-  },
   async mounted() {
     const fromCities = await this.$axios.$get('/api/from_cities')
     this.model.cityFromId = fromCities[0].id
@@ -150,6 +151,33 @@ export default {
     const clearances = await this.$axios.$get('/api/clearances')
     this.model.clearance = clearances[0].id
     this.clearances = clearances
+  },
+  methods: {
+    async calculate() {
+      await this.$axios.$post('/api/calculate', {
+        city_from: this.model.cityFromId,
+        city_to: this.model.cityToId,
+        clearance: this.model.clearance,
+        category_id: this.model.category,
+        weight: this.model.weight,
+        volume: this.model.volume
+      }).then((data) => {
+        this.model.agentsAmount = data.agentsAmount
+        this.model.sellersAmount = data.sellersAmount
+        this.model.price = data.price
+        this.model.total = data.total
+      })
+    },
+    async selectClearance(id) {
+      this.model.clearance = id
+      const categories = await this.$axios.$get('/api/categories', {
+        params: {
+          clearance_id: id
+        }
+      })
+      this.model.category = categories[0] ? categories[0].id : null
+      this.categories = categories
+    }
   }
 }
 </script>
