@@ -90,10 +90,10 @@
           <span class="text-xl font-semibold text-white ">{{ model.total }}</span>
         </div>
 
-        <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">
-          <span class="text-gray-500">Продажникам</span>
-          <span class="text-xl font-semibold text-white ">{{ model.sellersAmount }}</span>
-        </div>
+<!--        <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">-->
+<!--          <span class="text-gray-500">Продажникам</span>-->
+<!--          <span class="text-xl font-semibold text-white ">{{ model.sellersAmount }}</span>-->
+<!--        </div>-->
 
 <!--        <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">-->
 <!--          <span class="text-gray-500">Агентам</span>-->
