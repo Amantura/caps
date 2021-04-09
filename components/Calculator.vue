@@ -80,20 +80,25 @@
       <div class="w-full bg-gray-400 h-1px"></div>
 
       <div class="flex w-full pt-5 space-x-3">
-        <!-- <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">
+        <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">
           <span class="text-gray-500">Цена</span>
-          <span class="text-xl font-semibold text-white ">0 $/кг</span>
-        </div> -->
-
-        <!-- <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">
-          <span class="text-gray-500">Продажникам</span>
-          <span class="text-xl font-semibold text-white ">{{ this.model.sellersPrice }} $/кг</span>
-        </div> -->
+          <span class="text-xl font-semibold text-white ">{{ model.price }}</span>
+        </div>
 
         <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">
-          <span class="text-gray-500">Агентам</span>
-          <span class="text-xl font-semibold text-white ">{{ this.model.agentsPrice }} $/кг</span>
+          <span class="text-gray-500">Стоимость</span>
+          <span class="text-xl font-semibold text-white ">{{ model.total }}</span>
         </div>
+
+        <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">
+          <span class="text-gray-500">Продажникам</span>
+          <span class="text-xl font-semibold text-white ">{{ model.sellersAmount }}</span>
+        </div>
+
+<!--        <div class="flex flex-col items-center w-4/12 lg:items-start lg:pl-4">-->
+<!--          <span class="text-gray-500">Агентам</span>-->
+<!--          <span class="text-xl font-semibold text-white ">{{ model.agentsPrice }} $</span>-->
+<!--        </div>-->
       </div>
     </div>
   </form>
@@ -108,7 +113,10 @@ export default {
       clearance: null,
       weight: '',
       volume: '',
-      agentsPrice: 0
+      agentsAmount: 0,
+      sellersAmount: 0,
+      price: 0,
+      total: 0,
     },
     toCities: [],
     fromCities: [],
@@ -122,9 +130,11 @@ export default {
         clearance: this.model.clearance,
         weight: this.model.weight,
         volume: this.model.volume
-      }).then((data)=>{
-        this.model.agentsPrice = data.agentsAmount
-        console.log(data);
+      }).then((data) => {
+        this.model.agentsAmount = data.agentsAmount
+        this.model.sellersAmount = data.sellersAmount
+        this.model.price = data.price
+        this.model.total = data.total
       })
     }
   },
