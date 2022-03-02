@@ -104,6 +104,7 @@ export default {
       car: 1,
       weight: '',
       size: '',
+
     }
   })
 }
